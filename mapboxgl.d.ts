@@ -3,15 +3,67 @@ declare class mapboxgl {
 }
 
 declare namespace mapboxgl {
-	interface mapOptions {
-		/** ID of the container element */
-		container?: string;
+	interface MapOptions {
 
-		/** stylesheet location */
-		style?: string;
+		/** If true, an attribution control will be added to the map. */
+		attributionControl?: boolean;
+
+		/** Snap to north threshold in degrees. */
+		bearingSnap?: number;
+
+		/** If true, enable the "box zoom" interaction (see BoxZoomHandler) */
+		boxZoom?: boolean;
 
 		/** initial map center */
 		center?: Array<number>;
+
+		/** Style class names with which to initialize the map */
+		classes?: Array<string>;
+
+		/** ID of the container element */
+		container?: string;
+
+		/** If true, enable the "double click to zoom" interaction (see DoubleClickZoomHandler). */
+		doubleClickZoom?: boolean;
+
+		/** If true, enable the "drag to pan" interaction (see DragPanHandler). */
+		dragPan?: boolean;
+
+		/** If true, enable the "drag to rotate" interaction (see DragRotateHandler). */
+		dragRotate?: boolean;
+
+		/** If true, map creation will fail if the implementation determines that the performance of the created WebGL context would be dramatically lower than expected. */
+		failIfMajorPerformanceCaveat?: boolean;
+
+		/** If true, the map will track and update the page URL according to map position */
+		hash?: boolean;
+
+		/** If false, no mouse, touch, or keyboard listeners are attached to the map, so it will not respond to input */
+		interactive?: boolean;
+
+		/** If true, enable keyboard shortcuts (see KeyboardHandler). */
+		keyboard?: boolean;
+
+		/** If set, the map is constrained to the given bounds. */
+		maxBounds?: LngLatBounds | Array<Array<number>>;
+
+		/** Maximum zoom of the map */
+		maxZoom?: number;
+
+		/** Minimum zoom of the map */
+		minZoom?: number;
+
+		/** If true, The maps canvas can be exported to a PNG using map.getCanvas().toDataURL();. This is false by default as a performance optimization. */
+		preserveDrawingBuffer?: boolean;
+
+		/** If true, enable the "scroll to zoom" interaction */
+		scrollZoom?: boolean;
+
+		/** stylesheet location */
+		style?: string; //TODO: Can be an object too
+
+		/** If true, enable the "pinch to rotate and zoom" interaction (see TouchZoomRotateHandler). */
+		touchZoomRotate?: boolean;
 
 		/** Initial zoom level */
 		zoom?: number
@@ -45,8 +97,42 @@ declare namespace mapboxgl {
 		/** Convert an array to a LngLat object, or return an existing LngLat object unchanged. */
 		static convert(lngLat: Array<number>): LngLat;
 	}
+	
+	class LngLatBounds {
+		constructor(sw: LngLat, ne: LngLat);
+		
+		/** Extend the bounds to include a given LngLat or LngLatBounds. */
+		extend(obj: LngLat | LngLatBounds): this;
+		
+		/** Get the point equidistant from this box's corners */
+		getCenter(): LngLat;
+		/** Get east edge longitude */
+		getEast(): number;
+		/** Get north edge latitude */
+		getNorth(): number;
+		/** Get northeast corner */
+		getNorthEast(): LngLat;
+		/** Get northwest corner */
+		getNorthEast(): LngLat;
+		/** Get south edge latitude */
+		getSouth(): number;
+		/** Get southeast corner */
+		getSouthEast(): LngLat;
+		/** Get southwest corner */
+		getSouthWest(): LngLat;
+		/** Get west edge longitude */
+		getWest(): number;
+		
+		/** Returns a LngLatBounds as an array */
+		toArray(): Array<Array<number>>;
+		/** Return a LngLatBounds as a string */
+		toString(): string;
+		
+		/** Convert an array to a LngLatBounds object, or return an existing LngLatBounds object unchanged. */
+		static convert(input: LngLatBounds | Array<number> | Array<Array<number>>): LngLatBounds;
+	}
 	class Map extends Evented {
-		constructor(options: mapOptions);
+		constructor(options: MapOptions);
 
 		addControl(control: Control): this;
 
@@ -55,9 +141,14 @@ declare namespace mapboxgl {
 
 		addLayer(layer: Layer, before?: string): this;
 
+		easeTo(options: CameraAndAnimationOptions, eventData?: EventData): this;
 
 		getCenter(): LngLat;
 		getZoom(): number;
+		
+		jumpTo(options: CameraOptions, eventData?: EventData): this;
+
+		setPitch(pitch: number, eventData?: EventData): this;
 	}
 
 	/** TODO: Should be a class */
@@ -171,7 +262,7 @@ declare namespace mapboxgl {
 		"icon-image"?: string;
 		"icon-rotate"?: number;
 		"icon-padding"?: number;
-		"icon-keep-upright"?: number;
+		"icon-keep-upright"?: boolean;
 		"icon-offset"?: Array<number>;
 		"text-rotation-alignment"?: "map" | "viewport";
 		"text-field"?: string;
@@ -221,5 +312,37 @@ declare namespace mapboxgl {
 		constructor(options: {
 			position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
 		});
+	}
+
+	interface EventData {
+		originalEvent?: Event;
+		point?: Array<number>;
+		lngLat?: LngLat;
+	}
+	
+	interface CameraOptions {
+		/** Map center */
+		center?: LngLat;
+		/** Map zoom level */
+		zoom?: number;
+		/** Map rotation bearing in degrees counter-clockwise from north */
+		bearing?: number;
+		/** Map angle in degrees at which the camera is looking at the ground */
+		pitch?: number;
+		/** If zooming, the zoom center (defaults to map center) */
+		around?: LngLat;
+	}
+	
+	interface AnimationOptions {
+		/** Number in milliseconds */
+		duration?: number;
+		easing?: Function;
+		/** point, origin of movement relative to map center */
+		offset?: Array<number>;
+		/** When set to false, no animation happens */
+		animate?: boolean;
+	}
+	
+	interface CameraAndAnimationOptions extends CameraOptions, AnimationOptions {
 	}
 }
