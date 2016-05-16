@@ -16,3 +16,5 @@ Edit your tsconfig.json to contain
 ```
 
 Now you can ```import mapboxgl = require('mapbox-gl');```
+
+There is a working example with webpack here: https://github.com/danzel/mapboxgl-webpack-example
