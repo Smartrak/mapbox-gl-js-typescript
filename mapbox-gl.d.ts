@@ -1,3 +1,5 @@
+//import GeoJSON = require('geojson');
+
 declare class mapboxgl {
 	static accessToken: string;
 }
@@ -148,6 +150,8 @@ declare namespace mapboxgl {
 		
 		jumpTo(options: CameraOptions, eventData?: EventData): this;
 
+		project(lnglat: LngLat): { x: number, y: number };
+		
 		setPitch(pitch: number, eventData?: EventData): this;
 	}
 
@@ -346,3 +350,5 @@ declare namespace mapboxgl {
 	interface CameraAndAnimationOptions extends CameraOptions, AnimationOptions {
 	}
 }
+
+export = mapboxgl;

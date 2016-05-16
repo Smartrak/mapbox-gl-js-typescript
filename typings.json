@@ -1,0 +1,9 @@
+{
+  "name": "mapbox-gl",
+  "main": "mapbox-gl.d.ts",
+  "homepage": "https://github.com/mapbox/mapbox-gl-js",
+  "globalDependencies": {
+      "geojson": "registry:dt/geojson"
+  },
+  "version": "0.0.18"
+}
