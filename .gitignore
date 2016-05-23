@@ -1,8 +1,2 @@
 typings/
-.idea/compiler.xml
-.idea/mapbox-gl-js-typescript.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
-.idea/copyright/profiles_settings.xml
+.idea/
