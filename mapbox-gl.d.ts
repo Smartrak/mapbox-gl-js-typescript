@@ -62,13 +62,33 @@ declare namespace mapboxgl {
 		scrollZoom?: boolean;
 
 		/** stylesheet location */
-		style?: string; //TODO: Can be an object too
+		style?: string | Style; //TODO: Can be an object too
 
 		/** If true, enable the "pinch to rotate and zoom" interaction (see TouchZoomRotateHandler). */
 		touchZoomRotate?: boolean;
 
 		/** Initial zoom level */
 		zoom?: number
+	}
+
+	interface Style {
+		bearing?: number;
+		center?: Array<number>;
+		glyphs?: string;
+		layers?: Array<Layer>;
+		metadata?: any;
+		name?: string;
+		pitch?: number;
+		sources?: any;
+		sprite?: string;
+		transition?: Transition;
+		version: number;
+		zoom?: number;
+	}
+
+	interface Transition {
+		delay?: number;
+		duration?: number;
 	}
 
 	interface Source {
@@ -99,13 +119,13 @@ declare namespace mapboxgl {
 		/** Convert an array to a LngLat object, or return an existing LngLat object unchanged. */
 		static convert(lngLat: Array<number>): LngLat;
 	}
-	
+
 	class LngLatBounds {
 		constructor(sw: LngLat, ne: LngLat);
-		
+
 		/** Extend the bounds to include a given LngLat or LngLatBounds. */
 		extend(obj: LngLat | LngLatBounds): this;
-		
+
 		/** Get the point equidistant from this box's corners */
 		getCenter(): LngLat;
 		/** Get east edge longitude */
@@ -129,30 +149,171 @@ declare namespace mapboxgl {
 		toArray(): Array<Array<number>>;
 		/** Return a LngLatBounds as a string */
 		toString(): string;
-		
+
 		/** Convert an array to a LngLatBounds object, or return an existing LngLatBounds object unchanged. */
 		static convert(input: LngLatBounds | Array<number> | Array<Array<number>>): LngLatBounds;
 	}
+
+	class Point {
+		x: number;
+		y: number;
+
+		constructor(x: number, y: number);
+
+		clone(): Point;
+
+		add(point: Point): Point;
+
+		sub(point: Point): Point;
+
+		mult(point: Point): Point;
+
+		div(point: Point): Point;
+
+		rotate(angle: number): Point;
+
+		matMult(transformMatrix: Array<number>): Point;
+
+		unit(): Point;
+
+		perp(): Point;
+
+		round(): Point;
+
+		mag(): number;
+
+		equals(point: Point): boolean;
+
+		dist(point: Point): number;
+
+		distSqr(point: Point): number;
+
+		angle(): number;
+
+		angleTo(point: Point): number;
+
+		angleWith(point: Point): number;
+
+		angleWithStep(x: number, y: number): number;
+
+		static convert(point: Point | Array<Number>): Point;
+	}
+
 	class Map extends Evented {
 		constructor(options: MapOptions);
 
 		addControl(control: Control): this;
 
+		addClass(klass: string, options?: StyleOptions): this;
+
+		removeClass(klass: string, options?: StyleOptions): this;
+
+		setClasses(klasses: Array<string>, options?: StyleOptions): this;
+
+		hasClass(klass: string): boolean;
+
+		getClasses(): Array<string>;
+
+		resize(): this;
+
+		getBounds(): LngLatBounds;
+
+		setMaxBounds(bounds: LngLatBounds | Array<Array<number>> |null| undefined): this;
+
+		setMinZoom(minZoom: number): this;
+
+		setMaxZoom(maxZoom: number): this;
+
+		project(lnglat: LngLat): { x: number, y: number };
+
+		unproject(point: Array<number>): LngLat;
+
+		queryRenderedFeatures(pointOrBox?: Point | Array<number> | Array<Point> | Array<Array<number>>, params?: { layers?: Array<string>, filter?: Array<any> }): Array<GeoJSON.Feature>;
+
+		querySourceFeatures(sourceID: string, params?: { sourceLayer?: string, filter?: Array<any> }): Array<GeoJSON.Feature>;
+
+		setStyle(style: Style): this;
+
+		getStyle(): Style;
+
 		//TODO: Should this take source classes like this, or should it take json objects? probably both?
 		addSource(id: string, source: VectorSource | RasterSource | GeoJSONSource | ImageSource | VideoSource): this;
 
+		removeSource(id: string): this;
+
+		getSource(id: string): VectorSource | RasterSource | GeoJSONSource | ImageSource | VideoSource;
+
 		addLayer(layer: Layer, before?: string): this;
+
+		removeLayer(id: string): this;
+
+		getLayer(id: string): Layer;
+
+		setFilter(layer: string, filter: Array<any>): this
+
+		setLayerZoomRange(layerId: string, minzoom: number, maxzoom: number): this;
+
+		getFilter(layer: string): Array<any>;
+
+		setPaintProperty(layer: string, name: string, value: any, klass?: string): this;
+
+		getPaintProperty(layer: string, name: string, klass?: string): any;
+
+		setLayoutProperty(layer: string, name: string, value: any): this;
+
+		getLayoutProperty(layer: string, name: string, klass?: string): any;
+
+		getContainer(): HTMLElement;
+
+		getCanvasContainer(): HTMLElement;
+
+		getCanvas(): HTMLElement;
+
+		loaded(): boolean;
+
+		remove(): undefined;
+
+		getCenter(): LngLat;
+
+		setCenter(center: LngLat, eventData?: EventData): this;
+
+		panBy(offset: Array<number>, options?: AnimationOptions, eventData?: EventData): this;
+
+		panTo(lnglat: LngLat, options?: AnimationOptions, eventData?: EventData): this;
+
+		getZoom(): number;
+
+		setZoom(zoom: number, eventData?: EventData): this;
+
+		zoomTo(zoom: number, options?: AnimationOptions, eventData?: EventData): this;
+
+		zoomIn(options?: AnimationOptions, eventData?: EventData): this;
+
+		zoomOut(options?: AnimationOptions, eventData?: EventData): this;
+
+		getBearing(): number;
+
+		setBearing(bearing: number, eventData?: EventData): this;
+
+		rotateTo(bearing: number, options?: AnimationOptions, eventData?: EventData): this;
+
+		resetNorth(options?: AnimationOptions, eventData?: EventData): this;
+
+		snapToNorth(options?: AnimationOptions, eventData?: EventData): this;
+
+		getPitch(): number;
+
+		setPitch(pitch: number, eventData?: EventData): this;
+
+		fitBounds(bounds: LngLatBounds | Array<Array<number>>, options: { linear?: boolean, easing?: Function, padding?: number, maxZoom?: number }, eventData?: EventData): this;
+
+		jumpTo(options: CameraOptions, eventData?: EventData): this;
 
 		easeTo(options: CameraAndAnimationOptions, eventData?: EventData): this;
 
-		getCenter(): LngLat;
-		getZoom(): number;
-		
-		jumpTo(options: CameraOptions, eventData?: EventData): this;
+		flyTo(options: CameraAndAnimationOptions, eventData?: EventData): this;
 
-		project(lnglat: LngLat): { x: number, y: number };
-		
-		setPitch(pitch: number, eventData?: EventData): this;
+		stop(): this;
 	}
 
 	/** TODO: Should be a class */
@@ -200,7 +361,7 @@ declare namespace mapboxgl {
 		type?: "fill" | "line" | "symbol" | "circle" | "raster" | "background";
 
 		//metadata
-		//ref
+		ref?: string;
 
 		/** Docs say this is optional but errors say it isn't */
 		source: string;
@@ -212,10 +373,27 @@ declare namespace mapboxgl {
 
 		interactive?: boolean;
 
-		//filter?:
-		layout?: FillLayout | LineLayout | SymbolLayout;
-		paint?: FillPaint | LinePaint | SymbolPaint; //TODO: Other types
-		//paint.* 
+		filter?: Array<any>;
+		layout?: BackgroundLayout | FillLayout | LineLayout | SymbolLayout | RasterLayout | CircleLayout;
+		paint?: BackgroundPaint | FillPaint | LinePaint | SymbolPaint | RasterPaint | CirclePaint; //TODO: Other types
+		//paint.*
+	}
+
+	interface StyleFunction {
+		stops: Array<Array<any>>;
+		property?: string;
+		base?: number;
+		type?: "continuous" | "interval" | "categorical";
+	}
+
+	interface BackgroundLayout {
+		visibility?: "visible" | "none";
+	}
+
+	interface BackgroundPaint {
+		"background-color": string;
+		"background-pattern": string;
+		"background-opacity": number;
 	}
 
 	interface FillLayout {
@@ -305,14 +483,74 @@ declare namespace mapboxgl {
 		"text-translate-anchor"?: "map" | "viewport";
 	}
 
+	interface RasterLayout {
+		visibility?: "visible" | "none";
+	}
 
+	interface RasterPaint {
+		"raster-opacity"?: number;
+		"raster-hue-rotate"?: number;
+		"raster-brightness-min"?: number;
+		"raster-brightness-max"?: number;
+		"raster-saturation"?: number;
+		"raster-contrast"?: number;
+		"raster-fade-duration"?: number;
+	}
+
+	interface CircleLayout {
+		visibility?: "visible" | "none";
+	}
+
+	interface CirclePaint {
+		"circle-radius"?: number | StyleFunction;
+		"circle-color"?: number | StyleFunction;
+		"circle-blur"?: number;
+		"circle-opacity"?: number;
+		"circle-translate"?: Array<number>;
+		"circle-translate-anchor"?: "map" | "viewport";
+	}
+
+	class Popup {
+		constructor(options: {
+			closeButton?: boolean,
+			closeOnClick?: boolean,
+			anchor?: 'top' | 'bottom' | 'left' | 'right' | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+		});
+
+		addTo(map: Map): this;
+
+		remove(): this;
+
+		getLngLat(): LngLat;
+
+		setLngLat(lnglat: LngLat): this;
+
+		setText(test: string): this;
+
+		setHtml(html: string): this;
+
+		setDomContent(htmlNode: Node): this;
+	}
 
 	abstract class Control {
 		addTo(map: Map): this;
+
 		remove(): this;
 	}
 
+	class Navigation extends Control {
+		constructor(options: {
+			position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+		});
+	}
+
 	class Geolocate extends Control {
+		constructor(options: {
+			position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+		});
+	}
+
+	class Attribution extends Control {
 		constructor(options: {
 			position: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
 		});
@@ -323,7 +561,7 @@ declare namespace mapboxgl {
 		point?: Array<number>;
 		lngLat?: LngLat;
 	}
-	
+
 	interface CameraOptions {
 		/** Map center */
 		center?: LngLat;
@@ -336,7 +574,7 @@ declare namespace mapboxgl {
 		/** If zooming, the zoom center (defaults to map center) */
 		around?: LngLat;
 	}
-	
+
 	interface AnimationOptions {
 		/** Number in milliseconds */
 		duration?: number;
@@ -346,7 +584,11 @@ declare namespace mapboxgl {
 		/** When set to false, no animation happens */
 		animate?: boolean;
 	}
-	
+
+	interface StyleOptions {
+		transition?: boolean;
+	}
+
 	interface CameraAndAnimationOptions extends CameraOptions, AnimationOptions {
 	}
 }
