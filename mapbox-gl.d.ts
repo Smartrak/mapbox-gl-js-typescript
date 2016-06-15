@@ -314,6 +314,59 @@ declare namespace mapboxgl {
 		flyTo(options: CameraAndAnimationOptions, eventData?: EventData): this;
 
 		stop(): this;
+
+		scrollZoom: ScrollZoomHandler;
+
+		boxZoom: BoxZoomHandler;
+
+		dragRotate: DragRotateHandler;
+
+		dragPan: DragPanHandler;
+
+		keyboard: KeyboardHandler;
+
+		doubleClickZoom: DoubleClickZoomHandler;
+
+		touchZoomRotate: TouchZoomRotateHandler;
+	}
+
+	class Handler {
+		constructor(map: Map);
+
+		isEnabled(): boolean;
+
+		enable(): undefined;
+
+		disable(): undefined;
+	}
+
+	class BoxZoomHandler extends Handler {
+		isActive(): boolean;
+	}
+
+	class ScrollZoomHandler extends Handler {
+	}
+
+	class DragPanHandler extends Handler {
+		isActive(): boolean;
+	}
+
+	class DragRotateHandler extends Handler {
+		constructor(map: Map, options: {bearingSnap?: number});
+
+		isActive(): boolean;
+	}
+
+	class KeyboardHandler extends Handler {
+	}
+
+	class DoubleClickZoomHandler extends Handler {
+	}
+
+	class TouchZoomRotateHandler extends Handler {
+		disableRotation(): undefined;
+
+		enableRotation(): undefined;
 	}
 
 	/** TODO: Should be a class */
