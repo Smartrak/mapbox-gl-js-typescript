@@ -557,8 +557,8 @@ declare namespace mapboxgl {
 	interface CirclePaint {
 		"circle-radius"?: number | StyleFunction;
 		"circle-color"?: number | StyleFunction;
-		"circle-blur"?: number;
-		"circle-opacity"?: number;
+		"circle-blur"?: number | StyleFunction;
+		"circle-opacity"?: number | StyleFunction;
 		"circle-translate"?: Array<number>;
 		"circle-translate-anchor"?: "map" | "viewport";
 	}
