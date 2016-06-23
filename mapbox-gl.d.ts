@@ -218,7 +218,7 @@ declare namespace mapboxgl {
 
 		getBounds(): LngLatBounds;
 
-		setMaxBounds(bounds: LngLatBounds | Array<Array<number>> |null| undefined): this;
+		setMaxBounds(bounds: LngLatBounds | Array<Array<number>> |null| void): this;
 
 		setMinZoom(minZoom: number): this;
 
@@ -271,7 +271,7 @@ declare namespace mapboxgl {
 
 		loaded(): boolean;
 
-		remove(): undefined;
+		remove(): void;
 
 		getCenter(): LngLat;
 
@@ -335,9 +335,9 @@ declare namespace mapboxgl {
 
 		isEnabled(): boolean;
 
-		enable(): undefined;
+		enable(): void;
 
-		disable(): undefined;
+		disable(): void;
 	}
 
 	class BoxZoomHandler extends Handler {
@@ -364,9 +364,9 @@ declare namespace mapboxgl {
 	}
 
 	class TouchZoomRotateHandler extends Handler {
-		disableRotation(): undefined;
+		disableRotation(): void;
 
-		enableRotation(): undefined;
+		enableRotation(): void;
 	}
 
 	/** TODO: Should be a class */
