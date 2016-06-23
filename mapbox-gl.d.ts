@@ -218,7 +218,7 @@ declare namespace mapboxgl {
 
 		getBounds(): LngLatBounds;
 
-		setMaxBounds(bounds: LngLatBounds | Array<Array<number>> |null| undefined): this;
+		setMaxBounds(bounds: LngLatBounds | Array<Array<number>> |null| void): this;
 
 		setMinZoom(minZoom: number): this;
 
@@ -271,7 +271,7 @@ declare namespace mapboxgl {
 
 		loaded(): boolean;
 
-		remove(): undefined;
+		remove(): void;
 
 		getCenter(): LngLat;
 
@@ -314,6 +314,59 @@ declare namespace mapboxgl {
 		flyTo(options: CameraAndAnimationOptions, eventData?: EventData): this;
 
 		stop(): this;
+
+		scrollZoom: ScrollZoomHandler;
+
+		boxZoom: BoxZoomHandler;
+
+		dragRotate: DragRotateHandler;
+
+		dragPan: DragPanHandler;
+
+		keyboard: KeyboardHandler;
+
+		doubleClickZoom: DoubleClickZoomHandler;
+
+		touchZoomRotate: TouchZoomRotateHandler;
+	}
+
+	class Handler {
+		constructor(map: Map);
+
+		isEnabled(): boolean;
+
+		enable(): void;
+
+		disable(): void;
+	}
+
+	class BoxZoomHandler extends Handler {
+		isActive(): boolean;
+	}
+
+	class ScrollZoomHandler extends Handler {
+	}
+
+	class DragPanHandler extends Handler {
+		isActive(): boolean;
+	}
+
+	class DragRotateHandler extends Handler {
+		constructor(map: Map, options: {bearingSnap?: number});
+
+		isActive(): boolean;
+	}
+
+	class KeyboardHandler extends Handler {
+	}
+
+	class DoubleClickZoomHandler extends Handler {
+	}
+
+	class TouchZoomRotateHandler extends Handler {
+		disableRotation(): void;
+
+		enableRotation(): void;
 	}
 
 	/** TODO: Should be a class */
@@ -504,8 +557,8 @@ declare namespace mapboxgl {
 	interface CirclePaint {
 		"circle-radius"?: number | StyleFunction;
 		"circle-color"?: number | StyleFunction;
-		"circle-blur"?: number;
-		"circle-opacity"?: number;
+		"circle-blur"?: number | StyleFunction;
+		"circle-opacity"?: number | StyleFunction;
 		"circle-translate"?: Array<number>;
 		"circle-translate-anchor"?: "map" | "viewport";
 	}
