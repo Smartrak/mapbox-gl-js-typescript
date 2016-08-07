@@ -218,7 +218,11 @@ declare namespace mapboxgl {
 
 		getBounds(): LngLatBounds;
 
-		setMaxBounds(bounds: LngLatBounds | Array<Array<number>> |null| undefined): this;
+		/** Sets or clears the map's geographical bounds.
+		 * Pan and zoom operations are constrained within these bounds. If a pan or zoom is performed that would display regions outside these bounds, the map will instead display a position and zoom level as close as possible to the operation's request while still remaining within the bounds.
+		 * @param bounds The maximum bounds to set. If not provided provided, the function removes the map's maximum bounds.
+		 */
+		setMaxBounds(bounds?: LngLatBounds | Array<Array<number>>): this;
 
 		setMinZoom(minZoom: number): this;
 
