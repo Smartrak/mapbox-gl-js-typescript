@@ -1,3 +1,16 @@
+Repository Retired!
+===================
+
+This repository is now considered retired.
+The latest one is hosted in the DefinitelyTyped repository here https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/mapbox-gl
+
+Instructions here:
+https://github.com/mapbox/mapbox-gl-js/issues/2440#issuecomment-249020865
+
+
+Old instructions follow
+=======================
+
 Installing:
 
 ```
